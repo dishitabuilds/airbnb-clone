@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vacation-Rental Marketplace — Production Architecture</title>
+<style>
+  @font-face {
+    font-family: 'Airbnb Cereal VF';
+    src: url('../public/assets/fonts/AirbnbCerealVF.woff2') format('woff2-variations');
+    font-weight: 200 900;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1760px; height: 1240px;
+    font-family: 'Airbnb Cereal VF', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fbfbfa; color: #1c1c1a; position: relative; overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { position: absolute; inset: 0; padding: 34px 40px 24px; }
+
+  header { display: flex; align-items: baseline; gap: 18px; margin-bottom: 4px; }
+  h1 { font-size: 27px; font-weight: 700; letter-spacing: -0.3px; }
+  .sub { font-size: 14px; color: #6a6a6a; }
+  .legend { margin-left: auto; display: flex; gap: 16px; font-size: 11.5px; color: #55554f; align-items: center; }
+  .key { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 22px; height: 3px; border-radius: 2px; }
+
+  /* ---- layout grid ---- */
+  .board { position: relative; margin-top: 14px; height: 1108px; }
+
+  .band {
+    position: absolute; border-radius: 14px;
+    border: 1px solid #e3e2dd; background: #ffffff;
+  }
+  .band > .bandLabel {
+    position: absolute; top: -9px; left: 18px; background: #fbfbfa;
+    padding: 0 8px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: 1.1px; text-transform: uppercase; color: #8a8a80;
+  }
+  .band.tint { background: #f6f6f3; }
+
+  .node {
+    position: absolute; border-radius: 10px; background: #fff;
+    border: 1px solid #dcdbd4; padding: 9px 11px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.045);
+  }
+  .node .t { font-size: 13px; font-weight: 600; line-height: 1.25; }
+  .node .d { font-size: 10.8px; color: #6f6f68; line-height: 1.32; margin-top: 3px; }
+  .node .tag {
+    display: inline-block; margin-top: 5px; font-size: 9.5px; font-weight: 600;
+    letter-spacing: .3px; padding: 1.5px 6px; border-radius: 20px;
+    background: #f0efe9; color: #5f5f57;
+  }
+
+  .accent-edge   { border-top: 3px solid #ff385c; }
+  .accent-app    { border-top: 3px solid #d97706; }
+  .accent-svc    { border-top: 3px solid #0d7d8c; }
+  .accent-data   { border-top: 3px solid #4f46a3; }
+  .accent-stream { border-top: 3px solid #1f8a4c; }
+  .accent-plat   { border-top: 3px solid #6b6b63; }
+
+  svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .wire { fill: none; stroke: #b9b8ae; stroke-width: 1.6; }
+  .wire.sync { stroke: #7d7c72; }
+  .wire.async { stroke: #1f8a4c; stroke-dasharray: 6 5; }
+  .wire.cdc { stroke: #4f46a3; stroke-dasharray: 3 4; }
+
+  .wlabel { font-size: 10px; fill: #7a7a70; font-weight: 600; }
+
+  .notes {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+  }
+  .note {
+    border: 1px solid #e3e2dd; border-left: 3px solid #ff385c;
+    border-radius: 8px; background: #fff; padding: 9px 11px;
+  }
+  .note h4 { font-size: 11.5px; font-weight: 700; letter-spacing: .2px; margin-bottom: 4px; }
+  .note p { font-size: 10.6px; color: #62625b; line-height: 1.42; }
+  .note b { color: #2b2b26; font-weight: 600; }
+
+  footer {
+    position: absolute; bottom: -20px; right: 0;
+    font-size: 10px; color: #9a9a90;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Vacation-Rental Marketplace — Production Architecture</h1>
+    <span class="sub">Scaling strategy: frontend · backend · storage · search · deployment</span>
+    <div class="legend">
+      <span class="key"><span class="swatch" style="background:#7d7c72"></span>request path</span>
+      <span class="key"><span class="swatch" style="background:#1f8a4c"></span>events</span>
+      <span class="key"><span class="swatch" style="background:#4f46a3"></span>CDC / replication</span>
+    </div>
+  </header>
+
+  <div class="board">
+    <svg class="wires" viewBox="0 0 1680 1108" preserveAspectRatio="none">
+      <!-- clients -> edge -->
+      <path class="wire sync" d="M300,74 V104"/>
+      <path class="wire sync" d="M560,74 V104"/>
+      <path class="wire sync" d="M820,74 V104"/>
+      <!-- edge -> frontend -->
+      <path class="wire sync" d="M400,208 V246"/>
+      <path class="wire sync" d="M840,208 V246"/>
+      <!-- frontend -> gateway -->
+      <path class="wire sync" d="M400,382 V420"/>
+      <path class="wire sync" d="M840,382 V420"/>
+      <!-- gateway -> services -->
+      <path class="wire sync" d="M620,500 V536"/>
+      <!-- services -> data -->
+      <path class="wire sync" d="M200,742 V802"/>
+      <path class="wire sync" d="M470,742 V802"/>
+      <path class="wire sync" d="M740,742 V802"/>
+      <path class="wire sync" d="M1010,742 V802"/>
+      <!-- services -> event bus -->
+      <path class="wire async" d="M1240,690 H1330 V300"/>
+      <text class="wlabel" x="1258" y="684">publish</text>
+      <!-- event bus -> search + warehouse -->
+      <path class="wire cdc" d="M1330,880 H1250"/>
+      <path class="wire async" d="M1420,300 V820"/>
+    </svg>
+
+    <!-- ================= CLIENTS ================= -->
+    <div class="band" style="left:0; top:0; width:1120px; height:74px;">
+      <span class="bandLabel">Clients</span>
+      <div class="node accent-edge" style="left:20px; top:14px; width:240px;">
+        <div class="t">Web (desktop &amp; mobile)</div>
+        <div class="d">This build — React Server Components</div>
+      </div>
+      <div class="node accent-edge" style="left:290px; top:14px; width:240px;">
+        <div class="t">iOS / Android</div>
+        <div class="d">Native shells over the same BFF</div>
+      </div>
+      <div class="node accent-edge" style="left:560px; top:14px; width:240px;">
+        <div class="t">Host tools &amp; partner API</div>
+        <div class="d">Calendar sync, channel managers</div>
+      </div>
+      <div class="node accent-edge" style="left:830px; top:14px; width:270px;">
+        <div class="t">Crawlers &amp; SEO surfaces</div>
+        <div class="d">Served fully-rendered HTML</div>
+      </div>
+    </div>
+
+    <!-- ================= EDGE ================= -->
+    <div class="band tint" style="left:0; top:104px; width:1300px; height:104px;">
+      <span class="bandLabel">Edge — global, stateless, absorbs the read traffic</span>
+      <div class="node accent-edge" style="left:20px; top:18px; width:236px;">
+        <div class="t">CDN + WAF</div>
+        <div class="d">Anycast PoPs, TLS termination, DDoS and bot mitigation, rate limiting</div>
+      </div>
+      <div class="node accent-edge" style="left:276px; top:18px; width:236px;">
+        <div class="t">Edge cache</div>
+        <div class="d">Listing HTML cached by <b>(listing, locale, currency)</b>; tag-based purge on write</div>
+      </div>
+      <div class="node accent-edge" style="left:532px; top:18px; width:236px;">
+        <div class="t">Image CDN</div>
+        <div class="d">On-the-fly resize, AVIF/WebP negotiation, responsive <i>srcset</i></div>
+      </div>
+      <div class="node accent-edge" style="left:788px; top:18px; width:236px;">
+        <div class="t">Edge middleware</div>
+        <div class="d">Geo/locale routing, A/B bucketing, auth cookie checks</div>
+      </div>
+      <div class="node accent-edge" style="left:1044px; top:18px; width:236px;">
+        <div class="t">Edge KV</div>
+        <div class="d">Feature flags and config, replicated to every PoP</div>
+      </div>
+    </div>
+
+    <!-- ================= FRONTEND ================= -->
+    <div class="band" style="left:0; top:246px; width:1300px; height:136px;">
+      <span class="bandLabel">Frontend — rendering tier</span>
+      <div class="node accent-app" style="left:20px; top:20px; width:300px;">
+        <div class="t">Next.js App Router (RSC)</div>
+        <div class="d">Streaming SSR. Server Components keep listing data off the client bundle; only gallery, calendar and carousel ship JS.</div>
+        <span class="tag">HORIZONTAL · STATELESS PODS</span>
+      </div>
+      <div class="node accent-app" style="left:340px; top:20px; width:300px;">
+        <div class="t">ISR + tag revalidation</div>
+        <div class="d">Listing pages pre-rendered and revalidated on <b>listing.updated</b> events rather than on a timer — no stale prices, no thundering herd.</div>
+        <span class="tag">CACHE-FIRST</span>
+      </div>
+      <div class="node accent-app" style="left:660px; top:20px; width:300px;">
+        <div class="t">Static assets</div>
+        <div class="d">Immutable, content-hashed bundles and fonts on object storage behind the CDN. Deploys never invalidate old chunks.</div>
+        <span class="tag">IMMUTABLE</span>
+      </div>
+      <div class="node accent-app" style="left:980px; top:20px; width:300px;">
+        <div class="t">Client islands</div>
+        <div class="d">Photo tour, lightbox, date picker. Hydrated on interaction; state mirrored to the URL so views are shareable.</div>
+        <span class="tag">PARTIAL HYDRATION</span>
+      </div>
+    </div>
+
+    <!-- ================= GATEWAY ================= -->
+    <div class="band tint" style="left:0; top:420px; width:1300px; height:80px;">
+      <span class="bandLabel">API tier</span>
+      <div class="node accent-svc" style="left:20px; top:16px; width:400px;">
+        <div class="t">BFF / GraphQL federation</div>
+        <div class="d">One round trip per screen. Per-client schemas, persisted queries, depth and cost limits.</div>
+      </div>
+      <div class="node accent-svc" style="left:440px; top:16px; width:400px;">
+        <div class="t">API gateway</div>
+        <div class="d">AuthN/AuthZ (OIDC + short-lived JWT), quota, idempotency keys, request signing.</div>
+      </div>
+      <div class="node accent-svc" style="left:860px; top:16px; width:420px;">
+        <div class="t">Service mesh</div>
+        <div class="d">mTLS between services, retries with jitter, circuit breaking, per-route traffic splitting for canaries.</div>
+      </div>
+    </div>
+
+    <!-- ================= SERVICES ================= -->
+    <div class="band" style="left:0; top:536px; width:1300px; height:206px;">
+      <span class="bandLabel">Domain services — independently deployable and scaled</span>
+      <div class="node accent-svc" style="left:20px; top:22px; width:196px;">
+        <div class="t">Search</div>
+        <div class="d">Geo + availability + filters. Read-heavy; scales independently of everything else.</div>
+      </div>
+      <div class="node accent-svc" style="left:232px; top:22px; width:196px;">
+        <div class="t">Listing</div>
+        <div class="d">Rooms, amenities, photos, house rules. Source of truth for content.</div>
+      </div>
+      <div class="node accent-svc" style="left:444px; top:22px; width:196px;">
+        <div class="t">Availability &amp; Pricing</div>
+        <div class="d">Calendar, nightly rates, fees, dynamic pricing models.</div>
+      </div>
+      <div class="node accent-svc" style="left:656px; top:22px; width:196px;">
+        <div class="t">Booking</div>
+        <div class="d">The only strongly-consistent path. Reserves inventory, then orchestrates payment.</div>
+      </div>
+      <div class="node accent-svc" style="left:868px; top:22px; width:196px;">
+        <div class="t">Payments &amp; Ledger</div>
+        <div class="d">PSP integration, payouts, double-entry ledger, refunds.</div>
+      </div>
+      <div class="node accent-svc" style="left:1080px; top:22px; width:200px;">
+        <div class="t">Identity</div>
+        <div class="d">Accounts, sessions, verification, permissions.</div>
+      </div>
+
+      <div class="node accent-svc" style="left:20px; top:120px; width:196px;">
+        <div class="t">Reviews</div>
+        <div class="d">Ratings, moderation queue, aggregate scores.</div>
+      </div>
+      <div class="node accent-svc" style="left:232px; top:120px; width:196px;">
+        <div class="t">Messaging</div>
+        <div class="d">Guest ↔ host threads, WebSocket fan-out.</div>
+      </div>
+      <div class="node accent-svc" style="left:444px; top:120px; width:196px;">
+        <div class="t">Media</div>
+        <div class="d">Upload, virus scan, transcode, EXIF strip, derivative generation.</div>
+      </div>
+      <div class="node accent-svc" style="left:656px; top:120px; width:196px;">
+        <div class="t">Notifications</div>
+        <div class="d">Email, push, SMS. Templated, rate-limited, preference-aware.</div>
+      </div>
+      <div class="node accent-svc" style="left:868px; top:120px; width:196px;">
+        <div class="t">Trust &amp; Safety</div>
+        <div class="d">Fraud scoring, risk rules, content screening.</div>
+      </div>
+      <div class="node accent-svc" style="left:1080px; top:120px; width:200px;">
+        <div class="t">Host onboarding</div>
+        <div class="d">Listing creation, verification, payout setup.</div>
+      </div>
+    </div>
+
+    <!-- ================= DATA ================= -->
+    <div class="band tint" style="left:0; top:802px; width:1300px; height:150px;">
+      <span class="bandLabel">Storage — one store per job</span>
+      <div class="node accent-data" style="left:20px; top:20px; width:246px;">
+        <div class="t">PostgreSQL (primary)</div>
+        <div class="d">Per-service schemas. <b>Sharded by listing_id</b> for calendar and by user_id for accounts. Read replicas per region.</div>
+        <span class="tag">ACID · BOOKINGS</span>
+      </div>
+      <div class="node accent-data" style="left:276px; top:20px; width:246px;">
+        <div class="t">Redis</div>
+        <div class="d">Hot listing cache, session store, distributed locks for seat/inventory holds, rate-limit counters.</div>
+        <span class="tag">SUB-MS READS</span>
+      </div>
+      <div class="node accent-data" style="left:532px; top:20px; width:246px;">
+        <div class="t">OpenSearch / Elasticsearch</div>
+        <div class="d">Denormalised listing documents with geo_shape. Sharded by geo cell so a city query hits few shards.</div>
+        <span class="tag">SEARCH INDEX</span>
+      </div>
+      <div class="node accent-data" style="left:788px; top:20px; width:246px;">
+        <div class="t">Object storage (S3)</div>
+        <div class="d">Original photos and derivatives. Lifecycle to cold tiers; served only through the image CDN.</div>
+        <span class="tag">MEDIA</span>
+      </div>
+      <div class="node accent-data" style="left:1044px; top:20px; width:236px;">
+        <div class="t">Time-series &amp; feature store</div>
+        <div class="d">Pricing signals and ML features for ranking and dynamic rates.</div>
+        <span class="tag">ML</span>
+      </div>
+    </div>
+
+    <!-- ================= EVENT BACKBONE (right rail) ================= -->
+    <div class="band" style="left:1330px; top:104px; width:180px; height:668px;">
+      <span class="bandLabel">Events</span>
+      <div class="node accent-stream" style="left:14px; top:24px; width:152px;">
+        <div class="t">Kafka</div>
+        <div class="d">Durable log. Topics per aggregate: listing, booking, review, payment.</div>
+      </div>
+      <div class="node accent-stream" style="left:14px; top:150px; width:152px;">
+        <div class="t">Debezium CDC</div>
+        <div class="d">Streams Postgres changes so nothing dual-writes.</div>
+      </div>
+      <div class="node accent-stream" style="left:14px; top:268px; width:152px;">
+        <div class="t">Stream processors</div>
+        <div class="d">Project events into the search index, cache invalidation and ISR purge tags.</div>
+      </div>
+      <div class="node accent-stream" style="left:14px; top:412px; width:152px;">
+        <div class="t">Outbox pattern</div>
+        <div class="d">Writes and events commit in one transaction — exactly-once effects.</div>
+      </div>
+      <div class="node accent-stream" style="left:14px; top:540px; width:152px;">
+        <div class="t">DLQ + replay</div>
+        <div class="d">Poison messages parked; consumers rebuild from offset 0.</div>
+      </div>
+    </div>
+
+    <!-- ================= ANALYTICS ================= -->
+    <div class="band tint" style="left:1330px; top:802px; width:350px; height:150px;">
+      <span class="bandLabel">Analytics &amp; ML</span>
+      <div class="node accent-data" style="left:14px; top:20px; width:156px;">
+        <div class="t">Lakehouse</div>
+        <div class="d">Raw events + curated marts. Batch and streaming ingest.</div>
+      </div>
+      <div class="node accent-data" style="left:180px; top:20px; width:156px;">
+        <div class="t">Ranking &amp; pricing models</div>
+        <div class="d">Offline training, online inference behind the search service.</div>
+      </div>
+    </div>
+
+    <!-- ================= PLATFORM ================= -->
+    <div class="band" style="left:1520px; top:104px; width:160px; height:668px;">
+      <span class="bandLabel">Platform</span>
+      <div class="node accent-plat" style="left:12px; top:24px; width:136px;">
+        <div class="t">CI/CD</div>
+        <div class="d">Trunk-based. Build once, promote the same artifact dev → staging → prod.</div>
+      </div>
+      <div class="node accent-plat" style="left:12px; top:158px; width:136px;">
+        <div class="t">Progressive delivery</div>
+        <div class="d">Canary by traffic %, auto-rollback on SLO burn.</div>
+      </div>
+      <div class="node accent-plat" style="left:12px; top:282px; width:136px;">
+        <div class="t">Observability</div>
+        <div class="d">OpenTelemetry traces, RED metrics, structured logs, error tracking.</div>
+      </div>
+      <div class="node accent-plat" style="left:12px; top:428px; width:136px;">
+        <div class="t">Secrets &amp; IAM</div>
+        <div class="d">Short-lived credentials, least privilege, audited access.</div>
+      </div>
+      <div class="node accent-plat" style="left:12px; top:552px; width:136px;">
+        <div class="t">Chaos &amp; load</div>
+        <div class="d">Game days, peak-season load rehearsals.</div>
+      </div>
+    </div>
+
+    <!-- ================= SCALING NOTES ================= -->
+    <div class="notes">
+      <div class="note">
+        <h4>Frontend scaling</h4>
+        <p>Reads dominate ~1000:1. Listing pages are <b>statically rendered and edge-cached</b>, so traffic is absorbed at the PoP and origin pods scale with writes, not views. RSC keeps the client bundle small; only three interactive islands ship JS.</p>
+      </div>
+      <div class="note">
+        <h4>Search scaling</h4>
+        <p>Search never queries Postgres. A denormalised document per listing is projected from the event log and <b>sharded by geo cell</b>, so a city-level query touches a handful of shards. Popular queries are cached with a short TTL.</p>
+      </div>
+      <div class="note">
+        <h4>Booking correctness</h4>
+        <p>The one path that cannot be eventually consistent. Inventory is held with a <b>row-level lock plus an idempotency key</b>, then payment runs as a <b>saga</b> with compensating refunds. Everything downstream reacts to events.</p>
+      </div>
+      <div class="note">
+        <h4>Storage tiering</h4>
+        <p>Hot metadata in Redis, transactional truth in sharded Postgres, media in object storage behind an image CDN. <b>CDC — never dual writes</b> — keeps the search index, caches and warehouse in step.</p>
+      </div>
+      <div class="note">
+        <h4>Deployment</h4>
+        <p><b>Multi-region active-active for reads</b>, with a single writer region per booking shard to keep inventory linearizable. Canary releases gated on SLO burn rate; every artifact is immutable and rollback is a pointer move.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>Reference implementation in this repo covers the shaded frontend path: RSC listing page, client islands, image + font assets on the CDN.</footer>
+</div>
+</body>
+</html>

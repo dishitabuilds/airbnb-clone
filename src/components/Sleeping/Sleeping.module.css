@@ -1,0 +1,46 @@
+/*
+ * Measured from .reference/dump-listing.json rows 166-176 and the matching rules
+ * in .reference/reference.css. Section box: 32 + 26 (h2) + 24 + 269.458 (row) + 32
+ * + 1 (border) = 384.125px, which is the captured height.
+ */
+
+.sleeping {
+  padding: 32px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+/* Two tracks in the 652px column resolve to the captured 318px cards. */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* The photo is the card surface; there is no padding or outer border. */
+.photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.name {
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.detail {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--muted-strong);
+}

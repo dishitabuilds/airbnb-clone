@@ -1,0 +1,210 @@
+/*
+ * Measured from .reference/dump-listing.json (the section at [188,4929,1120,562])
+ * and the matching rules in .reference/reference.css.
+ *
+ * Line heights inherit the 1.43 body ratio wherever the capture's value is that
+ * product: 26px -> 37.18px, 20px -> 28.6px, 15px -> 21.45px, 13px -> 18.59px,
+ * 12px -> 17.16px. Only the values the reference states are written out.
+ */
+
+.meetHost {
+  padding: 48px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+/* 340 + 48 + 732 = the 1120px content width. */
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ---- Left: the profile card and the host facts under it. ---- */
+
+/* 1fr resolves to the captured 190.667px once the 100px stats rail is removed. */
+.card {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  align-items: center;
+  padding: 30px 24px;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.identity {
+  text-align: center;
+}
+
+.avatar {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 12px;
+}
+
+.avatar img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.verified {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--rausch);
+  color: #fff;
+}
+
+.name {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.role {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.stats {
+  padding-left: 20px;
+  border-left: 1px solid var(--line-soft);
+}
+
+.stat {
+  padding: 10px 0;
+}
+
+/* Hairlines between the stats only, never above the first or below the last. */
+.stat + .stat {
+  border-top: 1px solid var(--line-soft);
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.statLabel {
+  font-size: 12px;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+}
+
+/* ---- Right: co-hosts, host details, message CTA, safety note. ---- */
+
+.subheading {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.coHosts {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px 8px;
+  margin-bottom: 30px;
+}
+
+.coHost {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.coHostAvatar,
+.initial {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.initialPink {
+  background: #fde7ef;
+  color: #d4356e;
+}
+
+.initialBlue {
+  background: #e7f0fd;
+  color: #3a6ecc;
+}
+
+.hostDetails {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/*
+ * The capture leaves this button on `line-height: normal` and measures a 48px
+ * box: 14 + 20 + 14. `normal` for this face resolves to 19px here, which is a
+ * platform difference in the font's line metrics rather than a different font
+ * (advance widths match the capture to 0.005px), so the 20px line box the
+ * capture measured is pinned instead — otherwise the button, and every section
+ * below it, sits 1px high.
+ */
+.messageHost {
+  margin-top: 18px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  background: var(--grey-100);
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.messageHost:hover {
+  background: var(--grey-200);
+}
+
+.protection {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 30px;
+  font-size: 12px;
+  color: var(--muted-strong);
+}
+
+.protectionIcon {
+  flex-shrink: 0;
+}

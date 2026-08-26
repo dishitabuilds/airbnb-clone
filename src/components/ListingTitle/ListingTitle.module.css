@@ -1,0 +1,56 @@
+/*
+ * Title row: h1 left, Share / Save right.
+ *
+ * Measured from the title row in `.reference/dump-listing.json` and its rules in
+ * `.reference/reference.css`.
+ */
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 32px 0 18px;
+}
+
+.title {
+  font-size: 26px;
+  line-height: 30px;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--ink);
+}
+
+.actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    transform 0.05s;
+}
+
+.action:hover {
+  background: var(--grey-100);
+}
+
+.action:active {
+  transform: scale(0.96);
+}
+
+.label {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

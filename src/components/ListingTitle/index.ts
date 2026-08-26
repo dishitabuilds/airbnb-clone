@@ -1,0 +1,1 @@
+export { ListingTitle } from './ListingTitle';

@@ -1,0 +1,110 @@
+/*
+ * Measured from .reference/dump-listing.json (the section at [188,5824,1120,431])
+ * and the matching rules in .reference/reference.css.
+ */
+
+.nearbyStays {
+  padding: 48px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* 32px tall: the height of the round nav buttons the heading sits beside. */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageIndicator {
+  margin-right: 6px;
+  font-size: 14px;
+  color: var(--muted-strong);
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #b0b0b0;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.navButton:disabled {
+  opacity: 0.3;
+}
+
+/*
+ * A real scroll container, as in the capture: the buttons page it by setting
+ * scrollLeft and `scroll-behavior` does the animating, which keeps the track
+ * usable from the keyboard. The scrollbar itself is hidden but the 4px of
+ * bottom padding the capture reserves for it is kept.
+ */
+.track {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 4px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Five cards and four 20px gaps across the track: 208px each at 1120px. */
+.card {
+  display: block;
+  flex: 0 0 calc((100% - 80px) / 5);
+  min-width: 0;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Clamped to two lines, which puts the price line at +216px or +236px. */
+.cardTitle {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.price {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+/* The glyph is block-level, so the span carries it back into the text line. */
+.star {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  vertical-align: -1px;
+}

@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify.mjs",
+    "measure": "node scripts/measure.mjs",
+    "shoot": "node scripts/shoot.mjs",
+    "diagram": "node scripts/render-architecture.mjs",
+    "gen:icons": "node scripts/gen-icons.mjs",
+    "package": "node scripts/package.mjs"
   },
   "dependencies": {
     "next": "16.3.3",
@@ -14,13 +21,12 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
-    "tailwindcss": "^4",
+    "playwright": "^1.62.1",
     "typescript": "^5"
   }
 }

@@ -1,0 +1,172 @@
+/*
+ * The date-range calendar under the amenities block.
+ *
+ * Measured from `.reference/dump-listing.json` (the two-month grid at y=2379)
+ * and the rules behind it in `.reference/reference.css`.
+ */
+
+.section {
+  padding: 32px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+/* The 22px bottom margin collapses out and becomes the gap above the months. */
+.subtitle {
+  font-size: 14px;
+  color: var(--muted-strong);
+  margin: 6px 0 22px;
+}
+
+/* Two 298px months with a 56px trough: 298 + 56 + 298 = 652. */
+.months {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 56px;
+  position: relative;
+}
+
+/* Pulled out of flow so the chevrons sit level with the month captions. */
+.nav {
+  position: absolute;
+  top: -4px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  background: var(--grey-100);
+}
+
+.navIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.monthLabel {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/* Weeks group the cells for assistive tech without nesting a second grid. */
+.week {
+  display: contents;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  position: relative;
+  border-radius: 50%;
+}
+
+/* Leading blanks keep the first row aligned to the correct weekday. */
+.blank {
+  visibility: hidden;
+}
+
+/* Nights the host has blocked. #ddd is local to the calendar. */
+.unavailable {
+  color: #dddddd;
+  text-decoration: line-through;
+}
+
+.rangeMiddle {
+  background: var(--grey-100);
+  border-radius: 0;
+}
+
+.rangeStart,
+.rangeEnd {
+  background: var(--ink);
+  color: var(--white);
+  border-radius: 50%;
+}
+
+/*
+ * Fills the corners between the round end cap and the square middle band, so the
+ * grey run reads as continuous. Behind the cell's own background, never over it.
+ */
+.rangeStart::before,
+.rangeEnd::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--grey-100);
+  z-index: -1;
+}
+
+.rangeStart::before {
+  right: 0;
+}
+
+.rangeEnd::before {
+  left: 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+}
+
+/* Decorative keyboard badge. #b0b0b0 appears only here. */
+.keyboardHint {
+  width: 30px;
+  height: 22px;
+  border: 1px solid #b0b0b0;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear {
+  background: none;
+  border: none;
+  font-weight: 500;
+  text-decoration: underline;
+  font-size: 14px;
+}

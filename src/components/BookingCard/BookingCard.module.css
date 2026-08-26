@@ -1,0 +1,226 @@
+/*
+ * Sticky booking column: promo strip, booking card, report link.
+ *
+ * Geometry comes from `#bookingSticky` in `.reference/dump-listing.json` and the
+ * authored declarations behind it in `.reference/reference.css`. The sticky
+ * behaviour itself lives on the page's <aside> (`page.module.css .aside`), and
+ * the 372px width comes from the page grid column, so neither is repeated here —
+ * the reference's own wrapper rule is only `position: sticky; top: 100px`.
+ */
+
+/* ---------------------------------------------------------------- promo strip */
+
+.promo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.promoIcon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.promoText {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.promoLink {
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.claim {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--grey-50);
+  border: none;
+  border-radius: 8px;
+}
+
+.claim:hover {
+  background: var(--grey-100);
+}
+
+/* --------------------------------------------------------------- booking card */
+
+.card {
+  padding: 22px 24px 24px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.priceNights {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------- date / guest control */
+
+/*
+ * #b0b0b0 is local to this control: it is a darker rule than the page's
+ * --line (#dddddd), and the reference uses it for the box and both dividers.
+ */
+.dates {
+  border: 1px solid #b0b0b0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dateRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/*
+ * The cells are real buttons, so the button defaults that would fight the
+ * measured box (centred text, UA background/border, `line-height: normal`)
+ * are reset. The 1px transparent border is the reference's own: it reserves
+ * the space the divider on the second cell takes, keeping both cells 160.667px.
+ */
+.cell {
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  line-height: inherit;
+  background: none;
+  border: 1px solid transparent;
+}
+
+.cell + .cell {
+  border-left: 1px solid #b0b0b0;
+}
+
+.guestsCell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  line-height: inherit;
+  background: none;
+  border: none;
+  border-top: 1px solid #b0b0b0;
+}
+
+/*
+ * `.dates` clips its children so the rounded corners hold, which would also
+ * clip the global focus ring. Drawing it inside keeps every cell visible on Tab.
+ */
+.cell:focus-visible,
+.guestsCell:focus-visible {
+  outline-offset: -2px;
+}
+
+.cellLabel {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  /* The reference ships the labels pre-uppercased; transforming instead keeps
+     the readable casing in the DOM at an identical rendering. */
+  text-transform: uppercase;
+}
+
+.cellValue {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.chevron {
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------- cancellation, reserve, note */
+
+.cancellation {
+  margin: 16px 0;
+  padding: 8px;
+  font-size: 13px;
+  text-align: center;
+  color: var(--muted-strong);
+  background: var(--grey-50);
+  border-radius: 8px;
+}
+
+.cancellation b {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.reserve {
+  width: 100%;
+  height: 48px;
+  margin-top: 2px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--white);
+  background: var(--reserve);
+  border: none;
+  border-radius: 999px;
+  transition: filter 0.15s, transform 0.05s;
+}
+
+.reserve:hover {
+  background: var(--reserve-hover);
+}
+
+.reserve:active {
+  transform: scale(0.985);
+}
+
+.chargedNote {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--muted-strong);
+}
+
+/* ---------------------------------------------------------------- report link */
+
+.report {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 26px;
+  font-size: 14px;
+  color: var(--muted-strong);
+}
+
+.reportIcon {
+  flex-shrink: 0;
+}
+
+.reportLink {
+  text-decoration: underline;
+}

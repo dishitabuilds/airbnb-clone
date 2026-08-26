@@ -1,0 +1,29 @@
+/* Page shell: the 1280px container and the 652 / 96 / 372 content split. */
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 652px 372px;
+  column-gap: 96px;
+  align-items: start;
+}
+
+.left {
+  min-width: 0;
+}
+
+/* The booking card tracks the column, parking 100px below the viewport top. */
+.aside {
+  position: sticky;
+  top: 100px;
+}
+
+/* Sections below the fold span the full 1120px content width. */
+.wide {
+  width: 100%;
+}

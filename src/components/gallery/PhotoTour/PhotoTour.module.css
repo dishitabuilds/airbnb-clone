@@ -1,0 +1,249 @@
+/*
+ * Photo tour overlay.
+ *
+ * Every value here is read from .reference/dump-tour.json (boxes) and
+ * .reference/reference.css (authored rules ._KpcKWX, ._TCWfOg, ._tHVclZ,
+ * ._gKVFNL, ._AWcqip, ._MbzoEk, ._wdcjGJ, ._GXrMIo).
+ */
+
+.shell {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-tour);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+
+  /* Closed: faded, nudged down, and stepped out of visibility once the fade ends. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(28px);
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease),
+    visibility 0s linear 0.3s;
+}
+
+.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  /* No visibility step on the way in — it must be focusable from frame one. */
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Global CSS collapses the durations; the visibility delay needs clearing too. */
+  .shell {
+    transition-delay: 0s;
+  }
+}
+
+/* ---------------------------------------------------------------- header */
+
+.header {
+  flex-shrink: 0;
+  z-index: 5;
+  height: var(--header-h); /* 88px */
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  background: var(--white);
+}
+
+.back {
+  margin-left: -8px;
+}
+
+.title {
+  /* Centred against the overlay, not the flex row, so the action pair cannot
+     shift it. Deliberately no `top`: the static position already centres it. */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.headerActions {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.16s,
+    transform 0.08s;
+}
+
+.iconBtn span {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+.iconBtn:hover {
+  background: var(--grey-100);
+}
+
+.iconBtn:active {
+  transform: scale(0.9);
+}
+
+/* ------------------------------------------------------------ scroll body */
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.inner {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+
+/* --------------------------------------------------------- category strip */
+
+.nav {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.category {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category img {
+  width: 100%;
+  aspect-ratio: 106 / 100;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  transition:
+    transform 0.25s var(--ease),
+    filter 0.2s;
+}
+
+.category:hover img {
+  transform: scale(1.04);
+  filter: brightness(0.94);
+}
+
+.category:active img {
+  transform: scale(0.99);
+}
+
+.categoryLabel {
+  font-size: 14px;
+  color: var(--muted-strong);
+}
+
+/* -------------------------------------------------------------- room rows */
+
+.section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 60px;
+  align-items: start;
+  padding: 16px 0 4px;
+}
+
+.sectionHead {
+  /* Rides down beside a tall photo column. */
+  position: sticky;
+  top: 20px;
+}
+
+.sectionTitle {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.sectionAmenities {
+  font-size: 16px;
+  color: var(--muted-strong);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+.photos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: grid;
+  gap: 12px;
+}
+
+.rowFull {
+  grid-template-columns: 1fr;
+}
+
+.rowPair {
+  grid-template-columns: 1fr 1fr;
+}
+
+.photo {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  padding: 0;
+  border: none;
+  background: #eee; /* placeholder behind a photo that has not decoded yet */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s var(--ease);
+}
+
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.photo:hover::after {
+  background: #00000014;
+}
+
+.photo:hover img {
+  transform: scale(1.04);
+}
+
+.photo:active img {
+  transform: scale(1);
+}

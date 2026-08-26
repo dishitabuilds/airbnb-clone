@@ -1,0 +1,170 @@
+/*
+ * Top bar.
+ *
+ * Every value is measured: boxes from `#siteHeader` in `.reference/dump-listing.json`,
+ * authored declarations from the matching rules in `.reference/reference.css`.
+ * Borders read 0.666667px in the dump because the capture ran at 1.5x DPI; the
+ * authored width is 1px.
+ */
+
+.header {
+  position: relative;
+  z-index: var(--z-header);
+  padding: 0 var(--gutter);
+  background: var(--white);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/*
+ * 1fr auto 1fr: the search pill sizes to its content and stays optically centred
+ * while the logo and the action cluster hug the outer edges. At 1512px the
+ * columns resolve to 466.9 / 402.9 / 466.9.
+ */
+.inner {
+  max-width: 1760px;
+  margin: 0 auto;
+  height: var(--header-h);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.logo {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  color: var(--rausch);
+}
+
+/* The mark is 3490x1080, so pinning the height to 32px gives the measured 103px width. */
+.logoMark {
+  display: block;
+  height: 32px;
+}
+
+.logoMark svg {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.search {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 8px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 40px;
+  box-shadow: var(--shadow-pill);
+  transition: box-shadow 0.2s ease;
+}
+
+.search:hover {
+  box-shadow: var(--shadow-pill-hover);
+}
+
+/*
+ * The fields are a full 48px tall inside a 48px border-box pill, so they overlap
+ * its 1px borders by a pixel at each edge. That is what the capture shows
+ * (pill and buttons both start at y=20 with height 48).
+ */
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 40px;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* "Add guests" is the unfilled slot, so it reads as placeholder text. */
+.placeholder {
+  color: var(--muted-strong);
+  font-weight: 400;
+}
+
+/* Pulled 6px left so the artwork's own transparent margin does not read as a gap. */
+.house {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin-left: -6px;
+  object-fit: fill;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--line);
+}
+
+.searchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--rausch);
+  color: var(--white);
+}
+
+/*
+ * Deliberate, do not "fix" back to the plain icon.
+ *
+ * The reference does not use its Search glyph here: `._HEUMtF:before` is a
+ * pseudo-element whose background-image is a one-off data URI, drawn at 14x14
+ * on a 32-unit viewBox at stroke-width 4 — heavier than the 2 that the shared
+ * `Search` icon carries. Same circle and same tail, so the icon reproduces it
+ * exactly once the weight is corrected, and !important is what it takes to beat
+ * the stroke-width in the glyph's own inline style.
+ */
+.searchGlyph {
+  stroke-width: 4 !important;
+}
+
+.actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.host {
+  padding: 12px 14px;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.18s;
+}
+
+.host:hover {
+  background: var(--grey-50);
+}
+
+.round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--grey-100);
+  color: var(--ink);
+  transition: background 0.18s;
+}
+
+.round:hover {
+  background: var(--grey-200);
+}

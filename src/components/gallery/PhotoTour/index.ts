@@ -1,0 +1,1 @@
+export { PhotoTour } from './PhotoTour';

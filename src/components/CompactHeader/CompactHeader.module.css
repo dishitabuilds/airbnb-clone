@@ -1,0 +1,146 @@
+/*
+ * The bar that slides down once the hero grid has scrolled away.
+ *
+ * Measured from `#_JXzroy` in `.reference/dump-listing.json` and its rules in
+ * `.reference/reference.css`.
+ */
+
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-compact-header);
+  background: var(--white);
+  border-bottom: 1px solid var(--line-soft);
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /*
+   * visibility flips only after the slide-out finishes, so hiding still animates
+   * while a hidden bar stays out of the tab order and off the hit-test map.
+   */
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+
+.shown {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    visibility 0s;
+}
+
+/* Same 1280 / 80px shell as the page container, so the nav lines up with the h1. */
+.inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+}
+
+/* 22px of vertical padding on a 20.02px line box fills the 66px bar edge to edge. */
+.link {
+  position: relative;
+  padding: 22px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.link:hover {
+  color: #000;
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 12px;
+  height: 2px;
+  background: var(--ink);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.price {
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.total {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Measured as full ink, not muted — the reference sets this colour explicitly. */
+.nights {
+  color: var(--ink);
+}
+
+.rating {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/*
+ * The star is a CSS mask rather than an icon component: it sits inside the text
+ * run, where the icon set's `display: block` would break the line. Shape and
+ * sizing are lifted from `._QdaeUh`. The `mask` shorthand must precede
+ * `mask-image`, since the shorthand resets it.
+ */
+.star {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  vertical-align: -1px;
+  background: currentColor;
+  -webkit-mask: no-repeat center / contain;
+  mask: no-repeat center / contain;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2l4 9 10 1-7.5 6.5L25 29l-9-5-9 5 2.5-10.5L2 12l10-1z'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2l4 9 10 1-7.5 6.5L25 29l-9-5-9 5 2.5-10.5L2 12l10-1z'/></svg>");
+}
+
+.reserve {
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--reserve);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    filter 0.15s,
+    transform 0.05s;
+}
+
+.reserve:hover {
+  background: var(--reserve-hover);
+}
+
+.reserve:active {
+  transform: scale(0.985);
+}

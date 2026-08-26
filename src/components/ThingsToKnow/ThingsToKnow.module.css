@@ -1,0 +1,47 @@
+/*
+ * Measured from .reference/dump-listing.json (the section at [188,5491,1120,333])
+ * and the matching rules in .reference/reference.css.
+ */
+
+.thingsToKnow {
+  padding: 48px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+/* Three tracks with a 32px gutter resolve to the captured 352px columns. */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+}
+
+/* The glyph itself is 24px, set by its `size` prop. */
+.icon {
+  margin-bottom: 18px;
+}
+
+/* 22.88px line height is the inherited 1.43 ratio at 16px. */
+.columnTitle {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.line {
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.link {
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+}

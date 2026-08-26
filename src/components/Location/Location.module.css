@@ -1,0 +1,148 @@
+/*
+ * Measured from .reference/dump-listing.json (section#location, [188,4078,1120,851])
+ * and the matching rules in .reference/reference.css.
+ *
+ * Line heights are left to inherit wherever the capture's value is body
+ * line-height x font-size (1.43): 16px -> 22.88px, 14px -> 20.02px,
+ * 18px -> 25.74px. Only values the reference states are written out.
+ */
+
+.location {
+  padding: 48px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+}
+
+.place {
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+/* ---- The map panel: 1120 x 480, clipping everything to a 12px radius. ---- */
+
+.map {
+  position: relative;
+  height: 480px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e8eef0;
+}
+
+/*
+ * Two park blobs over a coastline: the 115deg stop at 34% is the water/land
+ * edge. Purely decorative, so it carries no text and needs no role.
+ */
+.terrain {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, #cfe3c8 0 6%, transparent 6%),
+    radial-gradient(circle at 70% 60%, #cfe3c8 0 8%, transparent 8%),
+    linear-gradient(115deg, #acd3e6 0 34%, #e9f0e4 34% 100%);
+}
+
+/* The street grid: 1px rules every 90px, verticals slightly darker. */
+.terrain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(180, 180, 170, 0.5) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(180, 180, 170, 0.35) 1px, transparent 1px);
+  background-size:
+    90px 90px,
+    90px 90px;
+  opacity: 0.5;
+}
+
+.searchButton {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.zoom {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoomButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Copy below the map. ---- */
+
+.note {
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.subheading {
+  margin: 40px 0 12px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.body {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Inline `margin-top: 18px` in the capture overrides the shared 14px. */
+.showMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

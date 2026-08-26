@@ -1,0 +1,125 @@
+/*
+ * The "What this place offers" dialog.
+ *
+ * Measured from `.reference/dump-amenities.json` (panel 780 x 804 at a 900px
+ * viewport) and the rules behind it in `.reference/reference.css`.
+ */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  /* Visibility waits out the fade, so the panel is not yanked mid-transition. */
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+
+.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease;
+}
+
+.panel {
+  width: 780px;
+  /* 804px tall at the 900px capture viewport: 100vh - 96. */
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 96px);
+  background: var(--white);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: transform 0.25s var(--ease);
+}
+
+.open .panel {
+  transform: translateY(0);
+}
+
+/* Fixed bar above the scroller — carries the close button only. */
+.header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Pulls the 40px hit area back so the glyph sits on the 24px gutter. */
+  margin-left: -8px;
+  transition: background 0.16s, transform 0.08s;
+}
+
+.close:hover {
+  background: var(--grey-100);
+}
+
+.close:active {
+  transform: scale(0.9);
+}
+
+.closeIcon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+.body {
+  overflow-y: auto;
+  padding: 0 48px 48px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 12px 0 24px;
+}
+
+.group {
+  margin-bottom: 30px;
+}
+
+.groupName {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.unavailable {
+  color: var(--muted-strong);
+}
+
+.unavailable .label {
+  text-decoration: line-through;
+}

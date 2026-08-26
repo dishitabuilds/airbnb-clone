@@ -1,0 +1,281 @@
+/*
+ * Reviews — the full 1120px content width, y 2728→4078 in the capture.
+ *
+ * Every value here is the authored one from .reference/reference.css, checked
+ * against the measured boxes in .reference/dump-listing.json. Borders read
+ * 0.666667px in the dump because the capture ran at 1.5x DPI; authored is 1px.
+ */
+
+.section {
+  padding: 48px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* Reviews opens the run of full-width sections, so it carries no rule above it. */
+.section:first-child {
+  border-top: none;
+}
+
+/* ---------------------------------------------------------------- 1. Hero */
+
+.hero {
+  padding: 8px 0 40px;
+  text-align: center;
+}
+
+.laurels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Height is authored; the 72.32px measured width is the artwork's own ratio. */
+.laurel {
+  height: 110px;
+}
+
+/* 100px x line-height 1.43 gives the measured 143px band the laurels sit in. */
+.heroRating {
+  font-size: 100px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.heroTitle {
+  margin-top: 8px;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.heroBlurb {
+  max-width: 420px;
+  margin: 8px auto 0;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.howReviewsWork {
+  margin-top: 14px;
+  /* The reference leaves the UA button padding of 1px 6px in place — it is what
+     makes this button measure 132x20 rather than hugging its text. */
+  padding: 1px 6px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------- 2. Rating breakdown */
+
+/* 1.4fr + 6x1fr resolves to 211.29 / 150.93 / ... / 150.94 across 1120px. */
+.breakdown {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(6, 1fr);
+  gap: 0;
+  padding: 8px 0 40px;
+}
+
+.cell {
+  padding: 0 24px;
+}
+
+.cell + .cell {
+  border-left: 1px solid var(--line);
+}
+
+.cellLabel {
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* 8px digit + 10px gap leaves the measured 145.29px track inside the cell. */
+.barRow {
+  display: grid;
+  grid-template-columns: 8px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.barDigit {
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.barTrack {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--grey-200);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--ink);
+}
+
+.categoryValue {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.categoryIcon {
+  width: 32px;
+  height: 32px;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------- 3. Tag row */
+
+.tags {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0 30px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tags::-webkit-scrollbar {
+  display: none;
+}
+
+/* 47.33px tall: 13px padding either side of a 19.33px normal-leading line. */
+.tag {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tagImage {
+  display: block;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.tagCount {
+  color: var(--muted-strong);
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------- 4. Review grid */
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px 80px;
+  padding-bottom: 40px;
+}
+
+.reviewHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.author {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tenure {
+  font-size: 13px;
+  color: var(--muted-strong);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.stars {
+  display: flex;
+  gap: 1px;
+}
+
+.star {
+  width: 10px;
+  height: 10px;
+}
+
+.body {
+  font-size: 15px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.bodyClamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.showMore {
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------- 5. Show all CTA */
+
+.showAll {
+  padding: 13px 23px;
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  background: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  transition: background 0.15s, transform 0.05s;
+}
+
+.showAll:hover {
+  background: var(--grey-50);
+}
+
+.showAll:active {
+  transform: scale(0.98);
+}

@@ -1,0 +1,61 @@
+/*
+ * Design tokens.
+ *
+ * Values are measured from the reference rather than guessed: colours come from
+ * its computed palette, the type ramp from its heading/body pairs, and the
+ * motion curve is the one Airbnb uses across its overlays.
+ */
+
+@font-face {
+  font-family: 'Airbnb Cereal VF';
+  src: url('/assets/fonts/AirbnbCerealVF.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-display: swap;
+}
+
+:root {
+  /* Ink & surfaces */
+  --ink: #222222;
+  --muted: #6a6a6a;
+  --muted-strong: #717171;
+  --white: #ffffff;
+
+  --grey-50: #f7f7f7;
+  --grey-100: #f2f2f2;
+  --grey-200: #ebebeb;
+
+  --line: #dddddd;
+  --line-soft: #ebebeb;
+  --card-border: rgba(0, 0, 0, 0.08);
+
+  /* Brand */
+  --rausch: #ff385c;
+  --reserve: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
+  --reserve-hover: linear-gradient(to right, #d81b5f 0%, #c31a5b 50%, #bd0463 100%);
+
+  /* Elevation */
+  --shadow-card: 0 6px 16px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.18);
+  --shadow-pill: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-pill-hover: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* Type */
+  --font: 'Airbnb Cereal VF', Circular, -apple-system, BlinkMacSystemFont, 'system-ui',
+    Roboto, 'Helvetica Neue', sans-serif;
+
+  /* Layout */
+  --container: 1280px;
+  --gutter: 80px;
+  --header-h: 88px;
+
+  /* Motion — the shared overlay/scroll curve */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Stacking order, declared once so overlays never fight */
+  --z-compact-header: 45;
+  --z-header: 50;
+  --z-tour: 120;
+  --z-lightbox: 140;
+  --z-modal: 150;
+  --z-toast: 200;
+}
