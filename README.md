@@ -1,9 +1,11 @@
 # Airbnb listing page — pixel-perfect clone
 
+**Live:** [airbnb-clone-dishita.vercel.app](https://airbnb-clone-dishita.vercel.app)
+
 A reproduction of the Airbnb listing page at
-[airbnb-clone-umber-two.vercel.app](https://airbnb-clone-umber-two.vercel.app),
-covering all three views — **Listing page**, **Photo tour**, and **Lightbox** — matched
-to the reference visually and behaviourally. Desktop, 1512px.
+[airbnb-clone-umber-two.vercel.app](https://airbnb-clone-umber-two.vercel.app) (the
+reference), covering all three views — **Listing page**, **Photo tour**, and
+**Lightbox** — matched to it visually and behaviourally. Desktop, 1512px.
 
 ```bash
 npm install
