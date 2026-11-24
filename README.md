@@ -7,8 +7,14 @@ A reproduction of the Airbnb listing page at
 reference), covering all three views — **Listing page**, **Photo tour**, and
 **Lightbox** — matched to it visually and behaviourally. Desktop, 1512px.
 
+## Run locally
+
+Prerequisites: Node.js and npm compatible with the versions in `package-lock.json`.
+
 ```bash
-npm install
+git clone https://github.com/dishitabuilds/airbnb-clone.git
+cd airbnb-clone
+npm ci
 npm run dev          # http://localhost:3000
 ```
 
@@ -36,7 +42,7 @@ Full account of the workflow, including every prompt: **[`docs/PROMPTS.md`](docs
 | **Next.js 16** (App Router) | React 19.2 | Server Components keep the listing data out of the client bundle. |
 | **TypeScript** | strict | The domain model is the contract seven parallel agents built against. |
 | **CSS Modules** | no framework | The design is bespoke — `26px/30px`, `rgba(0,0,0,.08)`, `cubic-bezier(.2,0,0,1)`. Utility classes would have been noise around arbitrary values. |
-| **No runtime dependencies** | — | No state library, no animation library, no UI kit. |
+| **No additional runtime libraries** | — | No state library, no animation library, no UI kit. |
 
 Data lives in `src/lib/listing.ts` behind `getListing()`, shaped the way a listings
 service would return it, so swapping the module for a network call touches one function.
@@ -115,6 +121,11 @@ npm run verify       # drives the real page, PASS/FAIL per assertion
 - Skip link to `#main`.
 
 ## Verification
+
+The results below are the project's recorded verification evidence, not a fresh
+check of this checkout. Start the local app before running the browser harness.
+`npm run measure` additionally requires the ignored `.reference/` capture, which
+is not included in a fresh clone.
 
 ```bash
 npm run typecheck    # tsc --noEmit          → clean
